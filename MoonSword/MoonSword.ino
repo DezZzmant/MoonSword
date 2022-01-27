@@ -2,18 +2,30 @@
 #define LEDPIN 12
 #define Button 9
 #define NUMLEDS 30
+#define NUM_LEDS 30
 #include <microLED.h>
 #include <FastLEDsupport.h> // вкл поддержку
-
-int brig = 17;
+#define SPARKING 120
+#define COOLING  55
+#define FRAMES_PER_SECOND 60
+DEFINE_GRADIENT_PALETTE( heatmap_gp ) {   // делаем палитру огня
+  0, 0, 0, 0,     // black
+  255, 0, 255, 120,   // red
+  255, 0, 255, 170,  // bright yellow
+  255, 0, 255, 60  // full white
+};
+CRGBPalette16 fire_p = heatmap_gp;
+bool gReverseDirection = false;
+CRGB leds[NUM_LEDS];
+int brig = 255;
 bool flag = false;
-microLED<30, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
+microLED<0, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
 int center = 15;
 void setup() {
   // put your setup code here, to run once:
   //Serial.begin(9600);
 pinMode(Button,INPUT_PULLUP);
-strip.setBrightness(120);
+strip.setBrightness(60);
 strip.clear();
 strip.show();
 delay(100);
@@ -22,39 +34,41 @@ delay(100);
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Check_button();
+  
   if (flag == true) // Если флаг Поднят по нажатию кнопки, выводим изображение на ленту
   {
     Flag_on();
-    
   }
   else // Если флаг опущен тушим ленту
   {
-    strip.clear();
-    strip.show();
-    delay(1);
+    Fire1();
+   // Fire2012();
   }
 
 }
 
 void Flag_on()
 {
+  microLED<30, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
+  strip.clear();
+  int brig = 255;
   for (int i = 0; i < 15; i++) 
   {
   strip.leds[center - i]=mHSV(120, 255, brig);
   strip.show();
   strip.leds[center + i]=mHSV(120, 255, brig);
   strip.show();
-  brig+=17;
- delay(1000);
+  brig-=25;
+ delay(10);
   }
-  //for (int i = 0; i < NUMLEDS / 2; i++) strip.leds[i] = mHSV(0, 255, 255);      // красный
-  //for (int i = NUMLEDS / 2; i < NUMLEDS; i++) strip.leds[i] = mHSV(80, 255, 255); // примерно зелёный
-  //strip.show(); // выводим изменения
-  //delay(2000);
-  
-  
-  
+  for(int i=255;i>=60;i--)
+ {
+  strip.setBrightness(i);
+  strip.show();
+  delay(10);
+ }
+  flag=false;
+  delay(100);
 }
 
 void Flag_off()
@@ -65,9 +79,23 @@ void Flag_off()
 
 void Check_button() //Функция проверки нажатия кнопки
 {
- if  (digitalRead(Button) == LOW) //Если кнопка нажата
+ if  (digitalRead(Button) == HIGH) //Если кнопка нажата
  {
-  flag = true; // перевернуть флаг на противоположное состояние
+  flag = true; 
  }
  else{flag=false;}
+}
+
+void Fire1()
+{
+  Check_button();
+  microLED<0, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
+  static int count = 0;
+  count += 10;
+  strip.begin();
+  for (int i = 0; i < 50; i++)
+    strip.send(CRGBtoData(ColorFromPalette(fire_p, inoise8(i * 25, count), 255, LINEARBLEND)));
+  strip.end();
+  delay(30);
+  Check_button();
 }
