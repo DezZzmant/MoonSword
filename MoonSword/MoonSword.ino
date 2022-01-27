@@ -1,22 +1,17 @@
 #define COLOR_DEBTH 3
 #define LEDPIN 12
 #define Button 9
-#define NUMLEDS 30
-#define NUM_LEDS 30
+#define NUMLEDS 60
 #include <microLED.h>
 #include <FastLEDsupport.h> // вкл поддержку
-#define SPARKING 120
-#define COOLING  55
-#define FRAMES_PER_SECOND 60
 DEFINE_GRADIENT_PALETTE( heatmap_gp ) {   // делаем палитру огня
   0, 0, 0, 0,     // black
-  255, 0, 255, 120,   // red
-  255, 0, 255, 170,  // bright yellow
-  255, 0, 255, 60  // full white
+  255, 0, 255, 120,   // RGB
+  255, 0, 255, 170,  // RGB2
+  255, 0, 255, 60  // RGB3
 };
 CRGBPalette16 fire_p = heatmap_gp;
 bool gReverseDirection = false;
-CRGB leds[NUM_LEDS];
 int brig = 255;
 bool flag = false;
 microLED<0, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
@@ -42,17 +37,16 @@ void loop() {
   else // Если флаг опущен тушим ленту
   {
     Fire1();
-   // Fire2012();
   }
 
 }
 
 void Flag_on()
 {
-  microLED<30, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
+  microLED<NUMLEDS, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
   strip.clear();
   int brig = 255;
-  for (int i = 0; i < 15; i++) 
+  for (int i = 0; i < NUMLEDS / 2; i++) 
   {
   strip.leds[center - i]=mHSV(120, 255, brig);
   strip.show();
