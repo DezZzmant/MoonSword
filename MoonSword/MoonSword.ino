@@ -15,7 +15,7 @@ bool gReverseDirection = false;
 int brig = 255;
 bool flag = false;
 microLED<0, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
-int center = 15;
+int center = NUMLEDS / 2;
 void setup() {
   // put your setup code here, to run once:
   //Serial.begin(9600);
@@ -52,7 +52,7 @@ void Flag_on()
   strip.show();
   strip.leds[center + i]=mHSV(120, 255, brig);
   strip.show();
-  brig-=25;
+  brig-=255 / NUMLEDS;
  delay(10);
   }
   for(int i=255;i>=60;i--)
