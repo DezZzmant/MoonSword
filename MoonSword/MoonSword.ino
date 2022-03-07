@@ -1,7 +1,7 @@
 #define COLOR_DEBTH 3
 #define LEDPIN 13
 #define Button 9
-#define NUMLEDS 60
+#define NUMLEDS 30
 #include <microLED.h>
 #include <FastLEDsupport.h> // вкл поддержку
 DEFINE_GRADIENT_PALETTE( heatmap_gp ) {   // делаем палитру огня
@@ -44,15 +44,16 @@ void loop() {
 void Flag_on()
 {
   microLED<NUMLEDS, LEDPIN, MLED_NO_CLOCK, LED_WS2818, ORDER_GRB, CLI_AVER> strip;
-  strip.clear();
-  int brig = 255;
+  //strip.clear();
+  
+  strip.fill(mHSV(120, 255, 60));
+  strip.show();
   for (int i = 0; i < NUMLEDS / 2; i++) 
   {
   strip.leds[center - i]=mHSV(120, 255, brig);
   strip.show();
   strip.leds[center + i]=mHSV(120, 255, brig);
   strip.show();
-  brig-=255 / NUMLEDS;
  delay(10);
   }
   for(int i=255;i>=60;i--)
