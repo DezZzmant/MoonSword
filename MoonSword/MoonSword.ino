@@ -1,7 +1,7 @@
 #define COLOR_DEBTH 3
 #define LEDPIN 13
 #define Button 9
-#define NUMLEDS 30
+#define NUMLEDS 60
 #include <microLED.h>
 #include <FastLEDsupport.h> // вкл поддержку
 DEFINE_GRADIENT_PALETTE( heatmap_gp ) {   // делаем палитру огня
